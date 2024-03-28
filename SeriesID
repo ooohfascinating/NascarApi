@@ -1,1 +1,11 @@
 
+switch (code) {
+        case 1: 
+            return 'Cup Series'   
+        case 2:
+            return 'Xfinity'
+        case 3:
+            return 'Truck Series' //this is an assumption
+        default:
+            return 'Unknown series'
+    }
