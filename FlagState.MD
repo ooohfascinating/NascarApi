@@ -1,4 +1,5 @@
- switch (code) {
+```
+switch (code) {
         case 0: 
             return 'None'   
         case 1:
@@ -22,3 +23,4 @@
         default:
             return 'UnAccounted For Flag'
     }
+```
