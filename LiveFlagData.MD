@@ -4,7 +4,7 @@
 [
   {
     lap_number: Lap the flag was thrown on
-    flag_state: flag state (see  [Flag State](https://github.com/ooohfascinating/NascarApi/blob/main/FlagState) for flag meaning)
+    flag_state: flag state (see  [Flag State](FlagState.MD) for flag meaning)
     elapsed_time: Seconds since start of race
     beneficiary: ?
     comment: Has stage information
