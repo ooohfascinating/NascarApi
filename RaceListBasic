@@ -1,2 +1,60 @@
 #https://cf.nascar.com/cacher/2023/race_list_basic.json
 {year}
+
+Series_1 [
+    {
+      race_id: 0
+      series_id: 1
+      "race_season": 0,
+      "race_name": "",
+      "race_type_id": 0,
+      "restrictor_plate": false,
+      "track_id": 0,
+      "track_name": "",
+      "date_scheduled": "0001-01-01T00:00:00",
+      "race_date": "0001-01-01T00:00:00",
+      "qualifying_date": "0001-01-01T00:00:00",
+      "tunein_date": "0001-01-01T00:00:00",
+      "scheduled_distance": 0.0,
+      "actual_distance": 0.00,
+      "scheduled_laps": 0,
+      "actual_laps": 0,
+      "stage_1_laps": 0,
+      "stage_2_laps": 0,
+      "stage_3_laps": 0,
+      "number_of_cars_in_field": 0,
+      "pole_winner_driver_id": 0,
+      "pole_winner_speed": 0,
+      "number_of_lead_changes": 0,
+      "number_of_leaders": 0,
+      "number_of_cautions": 0,
+      "number_of_caution_laps": 0,
+      "average_speed": 0.000,
+      "total_race_time": "0:00:00",
+      "margin_of_victory": ".000",
+      "race_purse": 0,
+      "race_comments": "",
+      "attendance": 0,
+      "infractions": [],
+      "schedule": [
+                      {
+                        "event_name": "",
+                        "notes": "",
+                        "start_time_utc": "0001-01-01T00:00:00",
+                        "run_type": 0
+                      },
+              ]
+      "radio_broadcaster": "",
+      "television_broadcaster": "",
+      "satellite_radio_broadcaster": "",
+      "master_race_id": ,
+      "inspection_complete": false,
+      "playoff_round": 0,
+      "is_qualifying_race": false,
+      "qualifying_race_no": 0,
+      "qualifying_race_id": -1,
+      "has_qualifying": false,
+      "winner_driver_id": 0,
+      "pole_winner_laptime": null
+    }
+]
