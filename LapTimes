@@ -1,2 +1,22 @@
 #https://cf.nascar.com/cacher/2023/2/5314/lap-times.json
 {year} {series ID} {Race ID}
+
+
+
+{
+  laps [ 
+      "Number": "0",
+      "FullName": "",
+      "Manufacturer": "",
+      "RunningPos": 0,
+      "NASCARDriverID": 0,
+      "Laps": [
+                 {
+              "Lap": 0,
+              "LapTime": null,
+              "LapSpeed": null,
+              "RunningPos": 0
+               },
+              ]
+       ]
+}
