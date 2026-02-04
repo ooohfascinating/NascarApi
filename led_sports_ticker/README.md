@@ -13,6 +13,8 @@ Real-time scrolling leaderboard display for NASCAR races, practice sessions, and
   - `scroll` - Single-line scrolling ticker (default)
   - `leaderboard` - Full multi-line leaderboard view
   - `compact` - Compact multi-row display
+  - `track_overlay` - Live track visualization with car positions
+- **Track Overlay**: Visual track map with car numbers moving in real-time
 - **Race Recording**: Record live race data for replay testing
 - **Replay Server**: Replay recorded races anytime for development
 - **Manufacturer Colors**: Toyota (red), Chevrolet (gold), Ford (blue)
@@ -32,9 +34,68 @@ python ticker.py
 # Full leaderboard view
 python ticker.py -m leaderboard
 
+# Track overlay with car positions
+python track_overlay.py
+
 # Run demo mode (sample data, no live race needed)
 python demo.py
 ```
+
+## Track Overlay
+
+Live visualization showing car number icons moving around the track:
+
+```
+ Clash at Bowman Gray @ Bowman Gray  [GREEN]
+ Lap 45/75
+
+ ......................................................  │   LEADERBOARD
+ ......................................................  │   ──────────────────────
+ ......................................................  │   P1  #5  K. Larson
+ ................░░░░░░░░░░░░░░░░░░░░░░................  │   P2  #24 W. Byron
+ ..........░░░░░░░░░░░░░░░░░░░░45░░░░░░░░░░░..........  │   P3  #54 T. Gibbs
+ .........░░░░░░░░░░░░░░░░░░░░░░░░░░░░░20░░11.........  │   P4  #20 C. Bell
+ ........░░░░░░░░░░░.................░░░░░░░░░░........  │   P5  #11 D. Hamlin
+ ........░░░░░............................░░23░........  │   P6  #23 B. Wallace
+ ........░░░░░............................░░░17........  │   P7  #17 C. Buescher
+ ........░░░░░░░░░░..................░░░░░░ 1░░........  │   P8  #1  R. Chastain
+ .........░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ 9░░░░.........  │   P9  #9  C. Elliott
+ ..........░░░░░░░░ 5░░░░░24▌░░░░54░░░░░░░░░░..........  │   P10 #45 T. Reddick
+ ................░░░░░░░░░░░░░░░░░░░░░░░...............  │
+ ......................................................  │
+
+  TYT   CHV   FRD   ▌=S/F
+```
+
+### Track Overlay Options
+
+```bash
+# Default view with leaderboard sidebar
+python track_overlay.py
+
+# Track only (no sidebar)
+python track_overlay.py --no-sidebar
+
+# Show top 15 cars instead of top 10
+python track_overlay.py -n 15
+
+# Faster refresh rate
+python track_overlay.py -r 0.25
+
+# Connect to replay server
+python track_overlay.py --api-url http://localhost:8080
+```
+
+### Supported Tracks
+
+Pre-defined layouts for:
+- Daytona International Speedway (tri-oval)
+- Bristol Motor Speedway (short track)
+- Bowman Gray Stadium (short track)
+- Atlanta Motor Speedway (superspeedway)
+- Martinsville Speedway (paperclip)
+
+Other tracks use a default oval layout.
 
 ## Recording & Replay
 
@@ -299,6 +360,7 @@ led_sports_ticker/
 ├── nascar_api.py     # NASCAR API client
 ├── led_display.py    # Display rendering
 ├── ticker.py         # Main ticker application
+├── track_overlay.py  # Live track visualization
 ├── recorder.py       # Race data recorder
 ├── replay.py         # Replay server
 ├── demo.py           # Demo mode

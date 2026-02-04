@@ -52,6 +52,7 @@ class Vehicle:
 class SessionInfo:
     race_id: int
     series_id: int
+    track_id: int
     run_name: str
     track_name: str
     track_length: float
@@ -178,6 +179,7 @@ class NascarAPI:
         session = SessionInfo(
             race_id=data.get('race_id', 0),
             series_id=data.get('series_id', 1),
+            track_id=data.get('track_id', 0),
             run_name=data.get('run_name', 'Unknown'),
             track_name=data.get('track_name', 'Unknown'),
             track_length=data.get('track_length', 0),
