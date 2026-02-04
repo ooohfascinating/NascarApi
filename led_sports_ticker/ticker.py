@@ -41,6 +41,7 @@ class TickerConfig:
     compact_rows: int = 5       # Rows for compact mode
     width: int = 120            # Display width (chars for terminal)
     use_emoji: bool = False     # Use emoji symbols
+    api_url: Optional[str] = None  # Custom API URL (for replay server)
 
 
 class NASCARTicker:
@@ -48,7 +49,7 @@ class NASCARTicker:
 
     def __init__(self, config: TickerConfig):
         self.config = config
-        self.api = NascarAPI()
+        self.api = NascarAPI(base_url=config.api_url)
         self.display = create_display("terminal", width=config.width, use_emoji=config.use_emoji)
         self.renderer = TickerRenderer(use_emoji=config.use_emoji)
         self.scroller = ScrollingText(self.display, speed=config.scroll_speed)
@@ -388,6 +389,10 @@ Examples:
   %(prog)s -m leaderboard           # Full leaderboard view
   %(prog)s -m compact -n 15         # Compact view, top 15
   %(prog)s -s 0.05 --no-speed       # Faster scroll, no speeds
+
+Replay Mode (use with replay.py server):
+  %(prog)s --api-url http://localhost:8080   # Connect to replay server
+  %(prog)s --api-url http://localhost:8080 -m leaderboard
         """
     )
 
@@ -412,6 +417,8 @@ Examples:
                         help='Use emoji symbols')
     parser.add_argument('--rows', type=int, default=5,
                         help='Rows for compact mode (default: 5)')
+    parser.add_argument('--api-url', type=str, default=None,
+                        help='Custom API URL (for replay server, e.g., http://localhost:8080)')
 
     args = parser.parse_args()
 
@@ -426,6 +433,7 @@ Examples:
         width=args.width,
         use_emoji=args.emoji,
         compact_rows=args.rows,
+        api_url=args.api_url,
     )
 
     ticker = NASCARTicker(config)

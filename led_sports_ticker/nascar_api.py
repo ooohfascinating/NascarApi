@@ -89,7 +89,7 @@ class LiveData:
 class NascarAPI:
     """Client for fetching NASCAR live data"""
 
-    BASE_URL = "https://cf.nascar.com"
+    DEFAULT_BASE_URL = "https://cf.nascar.com"
     LIVE_FEED = "/live/feeds/live-feed.json"
     LIVE_FLAG = "/live/feeds/live-flag-data.json"
     LIVE_POINTS = "/live/feeds/live-points.json"
@@ -133,15 +133,16 @@ class NascarAPI:
         "Frd": "blue",     # Ford
     }
 
-    def __init__(self, timeout: int = 10):
+    def __init__(self, timeout: int = 10, base_url: Optional[str] = None):
         self.timeout = timeout
+        self.base_url = base_url or self.DEFAULT_BASE_URL
         self._cache: Dict[str, Any] = {}
         self._cache_time: Dict[str, float] = {}
         self._cache_ttl = 1.0  # 1 second cache for live data
 
     def _fetch(self, endpoint: str) -> Optional[Dict]:
         """Fetch JSON data from NASCAR API"""
-        url = f"{self.BASE_URL}{endpoint}"
+        url = f"{self.base_url}{endpoint}"
 
         # Check cache
         now = time.time()

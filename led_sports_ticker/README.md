@@ -13,6 +13,8 @@ Real-time scrolling leaderboard display for NASCAR races, practice sessions, and
   - `scroll` - Single-line scrolling ticker (default)
   - `leaderboard` - Full multi-line leaderboard view
   - `compact` - Compact multi-row display
+- **Race Recording**: Record live race data for replay testing
+- **Replay Server**: Replay recorded races anytime for development
 - **Manufacturer Colors**: Toyota (red), Chevrolet (gold), Ford (blue)
 - **Flag Status**: Green, Yellow (Caution), Red, White, Checkered
 - **Position Highlighting**: Gold for leader, green for podium
@@ -22,41 +24,129 @@ Real-time scrolling leaderboard display for NASCAR races, practice sessions, and
 ## Quick Start
 
 ```bash
-# Run with live NASCAR data
 cd led_sports_ticker
-python ticker.py
 
-# Run demo mode (sample data)
-python demo.py
+# Run with live NASCAR data
+python ticker.py
 
 # Full leaderboard view
 python ticker.py -m leaderboard
 
-# Compact multi-row view
-python ticker.py -m compact
-
-# Faster scroll, top 10 only
-python ticker.py -s 0.05 -n 10
+# Run demo mode (sample data, no live race needed)
+python demo.py
 ```
+
+## Recording & Replay
+
+Record live race data to replay later for testing your LED display:
+
+### Recording a Race
+
+```bash
+# Record until you press Ctrl+C
+python recorder.py
+
+# Record for 1 hour
+python recorder.py -d 3600
+
+# Record with faster capture rate (every 0.5 seconds)
+python recorder.py -i 0.5
+
+# Record 1000 frames
+python recorder.py -f 1000
+
+# List existing recordings
+python recorder.py --list
+```
+
+### Playing Back a Recording
+
+```bash
+# Start replay server
+python replay.py recordings/nascar_s1_r5593_race_20260204.json.gz
+
+# Start at 2x speed
+python replay.py --speed 2.0 recording.json.gz
+
+# Use custom port
+python replay.py -p 9000 recording.json.gz
+```
+
+### Connecting Ticker to Replay
+
+```bash
+# In terminal 1: Start replay server
+python replay.py recordings/my_recording.json.gz
+
+# In terminal 2: Connect ticker to replay server
+python ticker.py --api-url http://localhost:8080
+python ticker.py --api-url http://localhost:8080 -m leaderboard
+```
+
+### Web Control Interface
+
+Open http://localhost:8080 in your browser to control playback:
+- Play/Pause/Stop
+- Seek to specific lap
+- Adjust playback speed (0.1x - 5x)
+- Toggle loop mode
+
+### Replay API Endpoints
+
+| Endpoint | Description |
+|----------|-------------|
+| `/live/feeds/live-feed.json` | Current frame data (same as NASCAR API) |
+| `/replay/status` | Playback status (frame, lap, speed, etc.) |
+| `/replay/play` | Start/resume playback |
+| `/replay/pause` | Pause playback |
+| `/replay/stop` | Stop and reset to beginning |
+| `/replay/seek?lap=50` | Seek to lap 50 |
+| `/replay/seek?frame=100` | Seek to frame 100 |
+| `/replay/seek?percent=50` | Seek to 50% |
+| `/replay/speed?value=2.0` | Set 2x playback speed |
+| `/replay/loop` | Toggle loop mode |
 
 ## Command Line Options
 
-```
-usage: ticker.py [-h] [-m {scroll,leaderboard,compact,battle}]
-                 [-n POSITIONS] [-s SPEED] [-r REFRESH] [-w WIDTH]
-                 [--no-speed] [--no-gap] [--no-mfr] [--emoji] [--rows ROWS]
+### ticker.py
 
+```
 Options:
   -m, --mode        Display mode (scroll, leaderboard, compact)
   -n, --positions   Number of positions to show (default: 20)
   -s, --speed       Scroll speed in seconds (default: 0.08)
   -r, --refresh     Data refresh rate in seconds (default: 2.0)
   -w, --width       Display width in characters (default: 120)
+  --api-url         Custom API URL (for replay server)
   --no-speed        Hide speed/lap time info
   --no-gap          Hide gap to leader
   --no-mfr          Hide manufacturer info
   --emoji           Use emoji symbols
   --rows            Rows for compact mode (default: 5)
+```
+
+### recorder.py
+
+```
+Options:
+  -o, --output      Output directory (default: recordings)
+  -i, --interval    Capture interval in seconds (default: 1.0)
+  -d, --duration    Recording duration in seconds
+  -f, --frames      Maximum frames to record
+  --no-compress     Save uncompressed JSON
+  --list            List existing recordings
+```
+
+### replay.py
+
+```
+Options:
+  -p, --port        Server port (default: 8080)
+  -H, --host        Server host (default: 0.0.0.0)
+  --speed           Initial playback speed (default: 1.0)
+  --no-autoplay     Don't auto-start playback
+  --no-loop         Don't loop at end
+  --list            List available recordings
 ```
 
 ## Display Modes
@@ -140,14 +230,52 @@ if data:
     for v in data.get_top_n(10):
         print(f"P{v.running_position} #{v.number} {v.driver.short_name}")
 
-# Run ticker programmatically
+# Connect to replay server instead of live API
+api = NascarAPI(base_url="http://localhost:8080")
+data = api.get_live_feed()
+
+# Run ticker with replay server
 config = TickerConfig(
     mode=DisplayMode.SCROLL,
     show_positions=15,
-    scroll_speed=0.06,
+    api_url="http://localhost:8080",
 )
 ticker = NASCARTicker(config)
 ticker.run()
+```
+
+## Recording File Format
+
+Recordings are stored as gzip-compressed JSON with this structure:
+
+```json
+{
+  "metadata": {
+    "recording_id": "nascar_s1_r5593_race_20260204_153000",
+    "start_time": "2026-02-04T15:30:00",
+    "end_time": "2026-02-04T19:00:00",
+    "race_id": 5593,
+    "series_id": 1,
+    "run_name": "Daytona 500",
+    "track_name": "Daytona International Speedway",
+    "run_type": 3,
+    "interval_ms": 1000,
+    "total_frames": 12600,
+    "total_duration_sec": 12600.0
+  },
+  "frames": [
+    {
+      "timestamp": 1707061800.0,
+      "frame_number": 0,
+      "elapsed_ms": 0,
+      "live_feed": { ... },
+      "flag_data": [ ... ],
+      "pit_data": [ ... ],
+      "points_data": [ ... ]
+    },
+    ...
+  ]
+}
 ```
 
 ## Hardware Support
@@ -170,8 +298,11 @@ led_sports_ticker/
 ├── __init__.py       # Package exports
 ├── nascar_api.py     # NASCAR API client
 ├── led_display.py    # Display rendering
-├── ticker.py         # Main application
+├── ticker.py         # Main ticker application
+├── recorder.py       # Race data recorder
+├── replay.py         # Replay server
 ├── demo.py           # Demo mode
+├── recordings/       # Saved recordings
 └── README.md         # This file
 ```
 
