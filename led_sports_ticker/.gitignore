@@ -1,0 +1,11 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Recordings (can be large)
+recordings/*.json
+recordings/*.json.gz
+
+# Keep recordings directory structure
+!recordings/.gitkeep
