@@ -3,7 +3,7 @@ switch (code) {
         case 1: 
             return 'Cup Series'   
         case 2:
-            return 'Xfinity'
+            return 'O'Reilly'
         case 3:
             return 'Truck Series' //this is an assumption
         default:
